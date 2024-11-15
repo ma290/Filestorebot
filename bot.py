@@ -110,7 +110,7 @@ async def handle_video(update: Update, context: CallbackContext):
     # Create the inline button with the tg://resolve link containing the hash
     inline_button = InlineKeyboardButton(
         text="Get Video by Hash",
-        url=f"tg://resolve?domain=User8393838_bot&text={video_hash}"
+        url=f"tg://resolve?domain=Leafsavebot&text={video_hash}"
     )
     reply_markup = InlineKeyboardMarkup([[inline_button]])
 
