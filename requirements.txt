@@ -1,0 +1,2 @@
+speedtest-cli
+python-telegram-bot
