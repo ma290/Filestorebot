@@ -1,3 +1,2 @@
 speedtest-cli
-python-telegram-bot
-python-telegram-bot[webhooks]
+python-telegram-bot==20.6
