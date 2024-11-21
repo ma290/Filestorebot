@@ -82,7 +82,7 @@ async def handle_video(update: Update, context: CallbackContext):
     # Create the inline button with the tg://resolve link containing the hash
     inline_button = InlineKeyboardButton(
         text="Get Video by Hash",
-        url=f"tg://resolve?domain=User8393838_bot&text={video_hash}"
+        url=f"tg://resolve?domain=leafsavebot&text={video_hash}"
     )
     reply_markup = InlineKeyboardMarkup([[inline_button]])
 
@@ -112,7 +112,7 @@ async def start(update: Update, context: CallbackContext):
 # Main function to run the bot
 def main():
     # Create the Application instance with your bot token
-    application = Application.builder().token("7247732685:AAHtSUv7iM1U-19qTvfaCr5NAk5HCefD1iY").build()
+    application = Application.builder().token("764974141419:AAFiBlAl861aG1WY_74QQfJE6YWDRAxdJI").build()
 
     # Add command and message handlers
     application.add_handler(CommandHandler("start", start))
