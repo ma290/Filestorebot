@@ -202,6 +202,11 @@ routes = web.RouteTableDef()
 async def root_route_handler(request):
     return web.json_response({"message": "ashutosh bot"})
 
+# Health check route for Koyeb (or similar services)
+@routes.get("/health", allow_head=True)
+async def health_check_handler(request):
+    return web.json_response({"status": "OK"})
+
 # New route to handle a custom message (just as an example)
 @routes.get("/video/{video_hash}")
 async def video_route_handler(request):
@@ -232,7 +237,5 @@ def main():
     # Start the Aiohttp server
     loop = asyncio.get_event_loop()
     loop.add_signal_handler(signal.SIGINT, app.cleanup)
-    web.run_app(app, host='0.0.0.0', port=8080)
+    web.run_app(app, host='0.0.0.0', port=8080
 
-if __name__ == '__main__':
-    main()
