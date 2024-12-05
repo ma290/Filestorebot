@@ -3,6 +3,8 @@ import shutil
 import hashlib
 import json
 import speedtest
+import asyncio
+import signal
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext, ChatMemberHandler
 from aiohttp import web
@@ -36,10 +38,14 @@ def save_hash_data(data):
 # Function to generate the SHA256 hash of a file
 def generate_file_hash(file_path):
     hash_sha256 = hashlib.sha256()
-    with open(file_path, 'rb') as file:
-        while chunk := file.read(8192):
-            hash_sha256.update(chunk)
-    return hash_sha256.hexdigest()
+    try:
+        with open(file_path, 'rb') as file:
+            while chunk := file.read(8192):
+                hash_sha256.update(chunk)
+        return hash_sha256.hexdigest()
+    except Exception as e:
+        print(f"Error generating hash for {file_path}: {e}")
+        return None
 
 # Force subscription check
 async def check_subscription(update: Update, context: CallbackContext):
@@ -86,6 +92,9 @@ async def handle_video(update: Update, context: CallbackContext):
     
     # Generate the hash for the video
     video_hash = generate_file_hash(file_path)
+    if not video_hash:
+        await update.message.reply_text("Failed to generate hash for the video.")
+        return
     
     # Load existing data and add new hash
     video_hashes = load_hash_data()
@@ -206,7 +215,7 @@ def main():
     app.add_routes(routes)
     
     # Telegram bot setup
-    application = Application.builder().token("7649741419:AAFiBlAl861aG1WY_74JQQfJE6YWDRAxdJI").build()
+    application = Application.builder().token("YOUR_BOT_TOKEN").build()
 
     # Add handlers for the Telegram bot
     application.add_handler(CommandHandler("start", start))
@@ -217,10 +226,12 @@ def main():
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_hash))
     application.add_handler(ChatMemberHandler(check_subscription, ChatMemberHandler.MY_CHAT_MEMBER))
 
-    # Start the Telegram bot
-    application.run_polling()
+    # Start the Telegram bot in a separate thread
+    application.run_polling(allowed_updates=Update.ALL_TYPES)
 
     # Start the Aiohttp server
+    loop = asyncio.get_event_loop()
+    loop.add_signal_handler(signal.SIGINT, app.cleanup)
     web.run_app(app, host='0.0.0.0', port=8080)
 
 if __name__ == '__main__':
