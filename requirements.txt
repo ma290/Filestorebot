@@ -1,3 +1,4 @@
 speedtest-cli
 python-telegram-bot
 aiohttp
+flask
